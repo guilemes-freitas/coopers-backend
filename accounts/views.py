@@ -75,8 +75,11 @@ class TaskView(APIView):
         except KeyError:
             return Response({"errors": "missing fields"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self,request):
+    def delete(self,request, task_id=''):
         try:
+            if task_id:
+                Tasks.objects.get(id=task_id).delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
             Tasks.objects.filter(user_id=request.user.id).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist:
