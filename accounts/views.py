@@ -26,7 +26,6 @@ class UserCreateView(APIView):
       return Response(serializer.data, status=status.HTTP_201_CREATED) 
     except IntegrityError:
       return Response({"errors":"User already exists"}, status=status.HTTP_409_CONFLICT)
-
     
 class LoginView(APIView):
   def post(self, request):
@@ -38,8 +37,7 @@ class LoginView(APIView):
     if user:
         token = Token.objects.get_or_create(user=user)[0]
         return Response({"token":str(token)}, status=status.HTTP_200_OK)
-    return Response({"errors":"User not registered"}, status=status.HTTP_401_UNAUTHORIZED)
-    
+    return Response({"errors":"User not registered"}, status=status.HTTP_401_UNAUTHORIZED)    
 
 class TaskView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -98,3 +96,25 @@ class TaskView(APIView):
         serializer = TaskSerializer(tasks, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DeleteCompletedView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self,request):
+        try:
+            Tasks.objects.filter(user_id=request.user.id,completed=True).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist:
+            return Response({"errors": "no task found"}, status=status.HTTP_404_NOT_FOUND)
+
+class DeleteIncompletedView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self,request):
+        try:
+            Tasks.objects.filter(user_id=request.user.id,completed=False).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist:
+            return Response({"errors": "no task found"}, status=status.HTTP_404_NOT_FOUND)
