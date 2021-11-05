@@ -209,6 +209,20 @@ Não há conteúdo no retorno da requisição.
 
 *RESPONSE STATUS -> HTTP 204 (no content)*
 
+**DELETE /api/tasks/completed/**
+Esta rota deleta tasks com o campo completed = true do usuário.
+
+Não há conteúdo no retorno da requisição.
+
+*RESPONSE STATUS -> HTTP 204 (no content)*
+
+**DELETE /api/tasks/incompleted/**
+Esta rota deleta tasks com o campo completed = false do usuário.
+
+Não há conteúdo no retorno da requisição.
+
+*RESPONSE STATUS -> HTTP 204 (no content)*
+
 ### **Tecnologias utilizadas** 📱
   Django
   Django Rest Framework
